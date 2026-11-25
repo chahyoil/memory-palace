@@ -5,6 +5,7 @@ Thumbs.db
 *.log
 
 # Capacitor로 APK를 만들 경우
+www/
 android/app/build/
 android/.gradle/
 android/local.properties

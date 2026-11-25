@@ -1,6 +1,6 @@
 // 오프라인 캐시용 서비스 워커.
 // 파일을 바꾸면 CACHE_VERSION을 올려야 폰에서 새 버전이 받아져요.
-const CACHE_VERSION = 'mp-v4';
+const CACHE_VERSION = 'mp-v5';
 
 const ASSETS = [
   './',

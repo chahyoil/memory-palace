@@ -34,6 +34,8 @@ updateLevelChip();
 startRouter();
 
 // 오프라인 사용을 위한 서비스 워커 (https 또는 localhost에서만 동작)
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+// APK(Capacitor) 안에서는 파일이 이미 앱 안에 있으니 쓰지 않아요. (쓰면 앱을 업데이트해도 옛 캐시가 보일 수 있음)
+const inApk = !!window.Capacitor?.isNativePlatform?.();
+if (!inApk && 'serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
