@@ -18,6 +18,14 @@ function write(key, value) {
   }
 }
 
+/** 다른 모듈용 일반 읽기/쓰기 (게임 진행: 별, 경험치, 업적 등) */
+export function getData(key, fallback) {
+  return read(key, fallback);
+}
+export function setData(key, value) {
+  write(key, value);
+}
+
 function remove(key) {
   try {
     localStorage.removeItem(PREFIX + key);

@@ -2,9 +2,10 @@
 // 칸 위치(눈)와 글자 소리(귀)를 동시에 기억했다가, N번 전과 같으면 누르기.
 // 단계 조정 규칙은 듀얼 N백 연구(Jaeggi 외 2008)에서 쓴 방식을 따랐어요:
 //   한 판(20+N번)에서 위치·소리 각각 틀린 게 3개 미만 → N+1, 어느 쪽이든 6개 이상 → N-1
-import { render, setTopbar, toast, shuffle } from '../ui.js';
-import { getSettings, setSettings, addHistory, getHistory } from '../storage.js';
-import { onLeave } from '../router.js';
+import { render, setTopbar, toast, shuffle, enterNext } from '../ui.js';
+import { getSettings, setSettings, getHistory } from '../storage.js';
+import { onLeave, go } from '../router.js';
+import { saveResult, rewardHtml, getActiveStage } from '../game.js';
 
 const MODE = 'nback';
 const DEFAULTS = { n: 2, auto: true, speed: 3000, sound: 'voice' };
@@ -123,7 +124,16 @@ function makeSequence(n) {
   return { T, pos, snd, posT, sndT };
 }
 
+/** 단계 도전에서 바로 시작. 소리/글자 방식은 평소 설정을 따라요 */
+export function start(stageSettings) {
+  const { sound } = getSettings(MODE, DEFAULTS);
+  const settings = { ...stageSettings, sound: canSpeak ? sound : 'text' };
+  if (settings.sound === 'voice') speak(' ');
+  play(settings);
+}
+
 function play(settings) {
+  enterNext();
   const { n } = settings;
   const seq = makeSequence(n);
   const resp = Array.from({ length: seq.T }, () => ({ pos: false, snd: false }));
@@ -207,7 +217,8 @@ function play(settings) {
     stopAll();
     onLeave(null);
     toast('중간에 그만둔 판은 기록하지 않아요');
-    setup();
+    if (getActiveStage()) go('/stages');
+    else setup();
   };
 
   const finish = () => {
@@ -231,10 +242,10 @@ function play(settings) {
     if (P.err < 3 && S.err < 3) next = Math.min(MAX_N, n + 1);
     else if (P.err > 5 || S.err > 5) next = Math.max(1, n - 1);
     const nextSettings = settings.auto ? { ...settings, n: next } : settings;
-    setSettings(MODE, nextSettings);
+    if (!getActiveStage()) setSettings(MODE, nextSettings);
 
     const prevBest = nbackBest();
-    addHistory({ mode: MODE, score: pct, total: 100, n, seconds: Math.round((seq.T * settings.speed) / 1000), settings });
+    const rec = saveResult({ mode: MODE, score: pct, total: 100, n, seconds: Math.round((seq.T * settings.speed) / 1000), settings });
 
     const move = !settings.auto || next === n
       ? `다음에도 ${n}백`
@@ -245,7 +256,8 @@ function play(settings) {
       <div class="score">${pct}%</div>
       <p class="center muted" style="margin:0">${n}백 · 맞힌 비율</p>
       ${prevBest != null && n > prevBest ? `<p class="center best-badge">🏆 처음으로 ${n}백까지 왔어요!</p>` : ''}
-      <p class="center"><b>${move}</b></p>
+      ${rewardHtml(rec)}
+      ${getActiveStage() ? '' : `<p class="center"><b>${move}</b></p>`}
       <section class="card">
         <table>
           <thead><tr><th></th><th>맞힘</th><th>놓침</th><th>잘못 누름</th></tr></thead>

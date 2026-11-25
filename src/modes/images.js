@@ -1,6 +1,7 @@
 // 이미지 순서 종목: 한 줄에 그림 5개. 순서를 외우고, 섞인 줄에서 원래 순서대로 누르기.
 // (온라인 기억력 대전의 '이미지' 종목을 초보용으로 단순하게 만든 것)
-import { render, setTopbar, startTimer, shuffle, sample, fmtTime, saveResult, resultBadge } from '../ui.js';
+import { render, setTopbar, startTimer, shuffle, sample, fmtTime, enterNext } from '../ui.js';
+import { saveResult, rewardHtml } from '../game.js';
 import { getSettings, setSettings, bestScore } from '../storage.js';
 import { onLeave } from '../router.js';
 import { IMAGE_POOL } from '../data/images.js';
@@ -48,7 +49,13 @@ function toRows(list) {
   return rows;
 }
 
+/** 단계 도전 등에서 설정 화면 없이 바로 시작 */
+export function start(settings) {
+  memorize(settings);
+}
+
 function memorize(settings) {
+  enterNext();
   const rows = toRows(sample(IMAGE_POOL, settings.count));
   const timer = startTimer(settings.seconds, () => recall(rows, settings, settings.seconds));
   onLeave(() => timer.stop());
@@ -69,6 +76,7 @@ function memorize(settings) {
 }
 
 function recall(rows, settings, usedSeconds) {
+  enterNext();
   onLeave(null);
   setTopbar('떠올리기');
   // 줄마다 섞어서 보여 주고, 누른 순서를 기록
@@ -128,7 +136,7 @@ function result(rows, picked, settings, usedSeconds) {
 
   render(`
     <div class="score">${score} / ${settings.count}</div>
-    ${resultBadge(rec)}
+    ${rewardHtml(rec)}
     <p class="center muted">외운 시간 ${fmtTime(usedSeconds)} · 위치가 맞은 그림 수</p>
     <section class="card stack">
       ${rows.map((r, i) => `

@@ -1,5 +1,6 @@
 // 카드 종목: 섞인 트럼프 카드의 순서를 외우고, 같은 순서로 골라내기
-import { render, setTopbar, startTimer, shuffle, esc, locusName, fmtTime, saveResult, resultBadge } from '../ui.js';
+import { render, setTopbar, startTimer, shuffle, esc, locusName, fmtTime, enterNext } from '../ui.js';
+import { saveResult, rewardHtml } from '../game.js';
 import { getLoci, getSettings, setSettings, bestScore } from '../storage.js';
 import { onLeave } from '../router.js';
 import { palacePickerHtml, bindPalacePicker, usePalace } from '../palace-picker.js';
@@ -52,7 +53,13 @@ function setup() {
   };
 }
 
+/** 단계 도전 등에서 설정 화면 없이 바로 시작 */
+export function start(settings) {
+  memorize(settings);
+}
+
 function memorize(settings) {
+  enterNext();
   const cards = shuffle(DECK).slice(0, settings.count);
   usePalace();
   const loci = getLoci();
@@ -83,6 +90,7 @@ function memorize(settings) {
 }
 
 function recall(cards, settings, usedSeconds) {
+  enterNext();
   onLeave(null);
   setTopbar('떠올리기');
   const loci = getLoci();
@@ -123,7 +131,7 @@ function result(cards, picked, settings, usedSeconds) {
 
   render(`
     <div class="score">${score} / ${cards.length}</div>
-    ${resultBadge(rec)}
+    ${rewardHtml(rec)}
     <p class="center muted">외운 시간 ${fmtTime(usedSeconds)}</p>
     <section class="card">
       <ul class="result-list">

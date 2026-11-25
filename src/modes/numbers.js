@@ -1,6 +1,7 @@
 // 숫자 종목: 무작위 숫자를 외우고 자리별로 적기
 // 한 자리(locus)에 4자리 숫자(= 이미지 2개)를 놓는 대회식 방법을 기본으로 해요.
-import { render, setTopbar, startTimer, esc, locusName, fmtTime, saveResult, resultBadge } from '../ui.js';
+import { render, setTopbar, startTimer, esc, locusName, fmtTime, enterNext } from '../ui.js';
+import { saveResult, rewardHtml } from '../game.js';
 import { getLoci, getSettings, setSettings, bestScore, getNumberOverrides } from '../storage.js';
 import { onLeave } from '../router.js';
 import { numberImages } from '../data/number-images.js';
@@ -61,7 +62,13 @@ function chunk(str, size) {
   return out;
 }
 
+/** 단계 도전 등에서 설정 화면 없이 바로 시작 */
+export function start(settings) {
+  memorize(settings);
+}
+
 function memorize(settings) {
+  enterNext();
   const digits = randomDigits(settings.digits);
   const groups = chunk(digits, PER_LOCUS);
   usePalace();
@@ -91,6 +98,7 @@ function memorize(settings) {
 }
 
 function recall(groups, settings, usedSeconds) {
+  enterNext();
   onLeave(null);
   setTopbar('떠올리기');
   const loci = getLoci();
@@ -141,7 +149,7 @@ function result(groups, answers, settings, usedSeconds) {
 
   render(`
     <div class="score">${score} / ${total}</div>
-    ${resultBadge(rec)}
+    ${rewardHtml(rec)}
     <p class="center muted">외운 시간 ${fmtTime(usedSeconds)} · 자리 기준 채점 (위치가 맞는 숫자 수)</p>
     <section class="card">
       <ul class="result-list">

@@ -11,6 +11,9 @@ import { cardsMode } from './modes/cards.js';
 import { numDrillMode } from './modes/numdrill.js';
 import { imagesMode } from './modes/images.js';
 import { nbackMode } from './modes/nback.js';
+import { stagesView } from './views/map.js';
+import { profileView } from './views/profile.js';
+import { updateLevelChip } from './game.js';
 
 route('/', homeView);
 route('/learn', learnView);
@@ -24,7 +27,10 @@ route('/cards', cardsMode);
 route('/numdrill', numDrillMode);
 route('/images', imagesMode);
 route('/nback', nbackMode);
+route('/stages', stagesView);
+route('/profile', profileView);
 
+updateLevelChip();
 startRouter();
 
 // 오프라인 사용을 위한 서비스 워커 (https 또는 localhost에서만 동작)

@@ -1,5 +1,6 @@
 // 단어 종목: 무작위 단어를 순서대로 외우고, 같은 순서로 적기
-import { render, setTopbar, startTimer, sample, esc, norm, locusName, fmtTime, saveResult, resultBadge } from '../ui.js';
+import { render, setTopbar, startTimer, sample, esc, norm, locusName, fmtTime, enterNext } from '../ui.js';
+import { saveResult, rewardHtml } from '../game.js';
 import { getLoci, getSettings, setSettings, bestScore } from '../storage.js';
 import { onLeave } from '../router.js';
 import { wordPool } from '../data/words-ko.js';
@@ -48,7 +49,13 @@ function setup() {
   };
 }
 
+/** 단계 도전 등에서 설정 화면 없이 바로 시작 */
+export function start(settings) {
+  memorize(settings);
+}
+
 function memorize(settings) {
+  enterNext();
   const words = sample(wordPool(settings.kind), settings.count);
   usePalace();
   const loci = getLoci();
@@ -81,6 +88,7 @@ function memorize(settings) {
 }
 
 function recall(words, settings, usedSeconds) {
+  enterNext();
   onLeave(null);
   setTopbar('떠올리기');
   const loci = getLoci();
@@ -112,7 +120,7 @@ function result(words, answers, settings, usedSeconds) {
 
   render(`
     <div class="score">${score} / ${words.length}</div>
-    ${resultBadge(rec)}
+    ${rewardHtml(rec)}
     <p class="center muted">외운 시간 ${fmtTime(usedSeconds)}</p>
     <section class="card">
       <ul class="result-list">

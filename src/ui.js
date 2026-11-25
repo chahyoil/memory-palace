@@ -1,22 +1,14 @@
 // 작은 DOM 헬퍼들
-import { addHistory, bestScore } from './storage.js';
+import { onNavigate } from './router.js';
 
 export const $app = () => document.getElementById('app');
 
-/**
- * 결과 저장 + 이전 최고 기록과 비교. 결과 화면에 resultBadge(반환값)를 넣어요.
- * (1:1 대전 대신 '어제의 나'와 겨루는 방식)
- */
-export function saveResult(entry) {
-  const prev = bestScore(entry.mode);
-  addHistory(entry);
-  return { prev, isBest: !!prev && entry.score > prev.score };
-}
-
-export function resultBadge({ prev, isBest }) {
-  if (isBest) return `<p class="center best-badge">🏆 최고 기록 갱신! (이전 ${prev.score}/${prev.total})</p>`;
-  if (prev) return `<p class="center muted" style="margin:0">최고 기록 ${prev.score}/${prev.total}</p>`;
-  return '<p class="center muted" style="margin:0">첫 기록이에요!</p>';
+// 화면이 바뀔 때(주소 이동, 결과 화면, enterNext 호출)만 들어오는 효과를 줘요.
+// 같은 화면을 다시 그릴 때(카드 누를 때 등)는 효과 없이 바로 바뀌어요.
+let animateNext = true;
+onNavigate(() => { animateNext = true; });
+export function enterNext() {
+  animateNext = true;
 }
 
 /** HTML 이스케이프 */
@@ -29,7 +21,15 @@ export function esc(s) {
 }
 
 export function render(html) {
-  $app().innerHTML = html;
+  const app = $app();
+  app.innerHTML = html;
+  const animate = animateNext || html.includes('class="score"');
+  animateNext = false;
+  app.classList.remove('enter');
+  if (animate) {
+    void app.offsetWidth; // 애니메이션 다시 시작
+    app.classList.add('enter');
+  }
   window.scrollTo(0, 0);
 }
 

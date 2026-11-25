@@ -15,10 +15,19 @@ export function onLeave(fn) {
   cleanup = fn;
 }
 
+// 화면(주소)이 바뀔 때마다 늘 불리는 함수들 (예: 단계 도전 상태 정리)
+const navListeners = [];
+export function onNavigate(fn) {
+  navListeners.push(fn);
+}
+
 function handle() {
   if (cleanup) {
     try { cleanup(); } catch { /* noop */ }
     cleanup = null;
+  }
+  for (const fn of navListeners) {
+    try { fn(); } catch { /* noop */ }
   }
   const path = location.hash.replace(/^#/, '') || '/';
   const handler = routes.get(path) || routes.get('/');

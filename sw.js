@@ -1,6 +1,6 @@
 // 오프라인 캐시용 서비스 워커.
 // 파일을 바꾸면 CACHE_VERSION을 올려야 폰에서 새 버전이 받아져요.
-const CACHE_VERSION = 'mp-v3';
+const CACHE_VERSION = 'mp-v4';
 
 const ASSETS = [
   './',
@@ -16,12 +16,16 @@ const ASSETS = [
   './src/storage.js',
   './src/ui.js',
   './src/palace-picker.js',
+  './src/game.js',
+  './src/fx.js',
   './src/views/home.js',
   './src/views/palace.js',
   './src/views/dictionary.js',
   './src/views/stats.js',
   './src/views/learn.js',
   './src/views/plan.js',
+  './src/views/map.js',
+  './src/views/profile.js',
   './src/modes/words.js',
   './src/modes/numbers.js',
   './src/modes/cards.js',
@@ -32,6 +36,7 @@ const ASSETS = [
   './src/data/number-images.js',
   './src/data/curriculum.js',
   './src/data/images.js',
+  './src/data/stages.js',
 ];
 
 self.addEventListener('install', (event) => {

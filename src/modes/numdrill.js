@@ -1,5 +1,6 @@
 // 숫자 사전 훈련: 00~99 ↔ 이미지를 빨리 떠올리는 반사 훈련 (4지선다)
-import { render, setTopbar, shuffle, sample, esc, toast, saveResult, resultBadge } from '../ui.js';
+import { render, setTopbar, shuffle, sample, esc, toast, enterNext } from '../ui.js';
+import { saveResult, rewardHtml } from '../game.js';
 import { getSettings, setSettings, bestScore, getNumberOverrides } from '../storage.js';
 import { onLeave } from '../router.js';
 import { numberImages, consonantHint } from '../data/number-images.js';
@@ -55,7 +56,13 @@ function setup() {
   };
 }
 
+/** 단계 도전 등에서 설정 화면 없이 바로 시작 */
+export function start(settings) {
+  play(settings);
+}
+
 function play(settings) {
+  enterNext();
   const dict = numberImages(getNumberOverrides());
   const [, lo, hi] = RANGES[settings.range];
   const pool = [];
@@ -73,8 +80,10 @@ function play(settings) {
   const started = performance.now();
   let locked = false;
   let pending = null; // 답을 누른 뒤 다음 문제로 넘어가는 타이머
+  let limitTimer = null; // 문제당 제한 시간 (단계 도전에서만)
   onLeave(() => {
     clearTimeout(pending);
+    clearTimeout(limitTimer);
     setTopbar('');
   });
 
@@ -89,6 +98,7 @@ function play(settings) {
 
     render(`
       <div class="progress"><div style="width:${(idx / qs.length) * 100}%"></div></div>
+      ${settings.limit ? `<div class="qtimer"><div style="animation-duration:${settings.limit}s"></div></div>` : ''}
       <div class="card big-item">${dir === 'n2w' ? key : esc(dict[key])}</div>
       <p class="center muted">${dir === 'n2w' ? `힌트: ${consonantHint(key)}` : '몇 번일까요?'}</p>
       <div class="choices">
@@ -96,20 +106,25 @@ function play(settings) {
       </div>
     `);
 
+    const answer = (b) => {
+      if (locked) return;
+      locked = true;
+      clearTimeout(limitTimer);
+      document.querySelector('.qtimer')?.classList.add('stopped');
+      const right = !!b && b.dataset.k === key;
+      if (b) b.classList.add(right ? 'correct' : 'wrong');
+      if (right) score += 1;
+      else {
+        misses.push(key);
+        document.querySelector(`.choices button[data-k="${key}"]`).classList.add('correct');
+        if (!b) document.querySelector('.big-item').insertAdjacentHTML('afterend', '<p class="center" style="color:var(--bad);margin:0">⏰ 시간 끝!</p>');
+      }
+      pending = setTimeout(() => { idx += 1; ask(); }, right ? 350 : 1100);
+    };
     document.querySelectorAll('.choices button').forEach((b) => {
-      b.onclick = () => {
-        if (locked) return;
-        locked = true;
-        const right = b.dataset.k === key;
-        b.classList.add(right ? 'correct' : 'wrong');
-        if (right) score += 1;
-        else {
-          misses.push(key);
-          document.querySelector(`.choices button[data-k="${key}"]`).classList.add('correct');
-        }
-        pending = setTimeout(() => { idx += 1; ask(); }, right ? 350 : 1100);
-      };
+      b.onclick = () => answer(b);
     });
+    if (settings.limit) limitTimer = setTimeout(() => answer(null), settings.limit * 1000);
   };
 
   const finish = () => {
@@ -119,7 +134,7 @@ function play(settings) {
     const uniqMiss = [...new Set(misses)];
     render(`
       <div class="score">${score} / ${qs.length}</div>
-      ${resultBadge(rec)}
+      ${rewardHtml(rec)}
       <p class="center muted">평균 ${(seconds / qs.length).toFixed(1)}초/문제 · 목표는 1초 이내</p>
       ${uniqMiss.length ? `
         <section class="card">
