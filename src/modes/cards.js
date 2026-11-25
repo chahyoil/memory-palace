@@ -106,7 +106,10 @@ function recall(cards, settings, usedSeconds) {
         ${n < cards.length ? `<span>${n + 1}</span>` : ''}
       </div>
       <div class="card-grid">
-        ${DECK.map((c) => `<button data-id="${c.id}" class="${c.red ? 'red' : ''} ${picked.includes(c.id) ? 'used' : ''}" ${picked.includes(c.id) || n >= cards.length ? 'disabled' : ''}>${c.label}</button>`).join('')}
+        ${SUITS.map((suit) => `
+          <div class="suit-row">
+            ${DECK.filter((c) => c.id.startsWith(suit.s)).map((c) => `<button data-id="${c.id}" class="${c.red ? 'red' : ''} ${picked.includes(c.id) ? 'used' : ''}" ${picked.includes(c.id) || n >= cards.length ? 'disabled' : ''}>${c.label}</button>`).join('')}
+          </div>`).join('')}
       </div>
       <p></p>
       <div class="row">

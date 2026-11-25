@@ -60,19 +60,23 @@ PC의 IP(예: `192.168.0.10`)를 확인해서 폰 크롬에서 `http://192.168.0
 
 > 코드를 고친 뒤 폰에 반영하려면 `sw.js`의 `CACHE_VERSION`을 올려 주세요 (`mp-v1` → `mp-v2`). 안 올리면 폰이 예전 캐시를 계속 보여줘요.
 
-### 방법 B. Capacitor로 APK 만들기 (선택)
+### 방법 B. APK 파일 (Capacitor)
 
-진짜 APK가 필요할 때만. Android Studio가 있어야 해요.
+이미 설정돼 있어요 (`android/`, `capacitor.config.json`, 앱 아이디 `kr.memorypalace.app`). 필요한 것:
+
+- JDK 21 (`JAVA_HOME`)
+- Android SDK: 플랫폼 36, 빌드 도구 36. `android/local.properties` 에 `sdk.dir=...` (git에 안 올라감)
 
 ```bash
-npm i -D @capacitor/cli @capacitor/core @capacitor/android
-npx cap init "기억의 궁전" com.example.memorypalace --web-dir .
-npx cap add android
-npx cap sync android
-npx cap open android      # Android Studio에서 ▶ 실행 또는 APK 빌드
+npm install        # 처음 한 번
+npm run apk        # 검사 → www/ 복사 → cap sync → gradlew assembleDebug
 ```
 
-> `--web-dir .` 은 프로젝트 루트 전체를 앱에 넣어요. 깔끔하게 하려면 나중에 웹 파일을 `www/` 로 옮기고 `--web-dir www` 로 바꾸세요.
+결과: `android/app/build/outputs/apk/debug/app-debug.apk` → 폰으로 옮겨서 설치 ("출처를 알 수 없는 앱" 허용).
+
+- 앱 아이콘·시작 화면: `android/app/src/main/res/drawable/ic_launcher_foreground_palace.xml`, `launch_bg.xml`
+- APK 안에서는 서비스 워커를 쓰지 않아요. 새 버전은 APK를 다시 빌드해서 덮어 설치하면 돼요 (기록은 유지).
+- 웹(PWA)과 APK는 기록이 따로예요. 옮길 땐 기록 화면의 백업/복원을 써요.
 
 ## 폴더 구조
 

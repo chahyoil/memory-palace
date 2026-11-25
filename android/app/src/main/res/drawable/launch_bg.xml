@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 앱을 켤 때 잠깐 보이는 화면: 남색 바탕 + 가운데 궁전 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <color android:color="#1F2A44" />
+    </item>
+    <item
+        android:width="180dp"
+        android:height="180dp"
+        android:drawable="@drawable/ic_launcher_foreground_palace"
+        android:gravity="center" />
+</layer-list>

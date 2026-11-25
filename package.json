@@ -10,5 +10,10 @@
     "check": "node scripts/check.mjs",
     "build:www": "node scripts/build-www.mjs",
     "apk": "npm run check && npm run build:www && npx cap sync android && cd android && gradlew.bat assembleDebug"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/core": "^8.6.2"
   }
 }

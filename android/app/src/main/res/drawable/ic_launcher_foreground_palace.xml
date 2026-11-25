@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 앱 아이콘 앞면: icons/icon.svg 의 궁전 모양 (적응형 아이콘 안전 영역에 맞게 0.8배) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <group
+        android:pivotX="256"
+        android:pivotY="256"
+        android:scaleX="0.8"
+        android:scaleY="0.8">
+        <path android:fillColor="#FB923C" android:pathData="M256,92 L420,182 L92,182 Z" />
+        <path android:fillColor="#FB923C" android:pathData="M118,196 H394 A6,6 0 0 1 400,202 V212 A6,6 0 0 1 394,218 H118 A6,6 0 0 1 112,212 V202 A6,6 0 0 1 118,196 Z" />
+        <path android:fillColor="#F6F4EF" android:pathData="M148,232 H172 A8,8 0 0 1 180,240 V374 A8,8 0 0 1 172,382 H148 A8,8 0 0 1 140,374 V240 A8,8 0 0 1 148,232 Z" />
+        <path android:fillColor="#F6F4EF" android:pathData="M244,232 H268 A8,8 0 0 1 276,240 V374 A8,8 0 0 1 268,382 H244 A8,8 0 0 1 236,374 V240 A8,8 0 0 1 244,232 Z" />
+        <path android:fillColor="#F6F4EF" android:pathData="M340,232 H364 A8,8 0 0 1 372,240 V374 A8,8 0 0 1 364,382 H340 A8,8 0 0 1 332,374 V240 A8,8 0 0 1 340,232 Z" />
+        <path android:fillColor="#FB923C" android:pathData="M106,396 H406 A6,6 0 0 1 412,402 V416 A6,6 0 0 1 406,422 H106 A6,6 0 0 1 100,416 V402 A6,6 0 0 1 106,396 Z" />
+    </group>
+</vector>
