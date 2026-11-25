@@ -1,0 +1,33 @@
+import { route, startRouter } from './router.js';
+import { homeView } from './views/home.js';
+import { learnView } from './views/learn.js';
+import { palaceView } from './views/palace.js';
+import { dictionaryView } from './views/dictionary.js';
+import { statsView } from './views/stats.js';
+import { planView } from './views/plan.js';
+import { wordsMode } from './modes/words.js';
+import { numbersMode } from './modes/numbers.js';
+import { cardsMode } from './modes/cards.js';
+import { numDrillMode } from './modes/numdrill.js';
+import { imagesMode } from './modes/images.js';
+import { nbackMode } from './modes/nback.js';
+
+route('/', homeView);
+route('/learn', learnView);
+route('/palace', palaceView);
+route('/dictionary', dictionaryView);
+route('/stats', statsView);
+route('/plan', planView);
+route('/words', wordsMode);
+route('/numbers', numbersMode);
+route('/cards', cardsMode);
+route('/numdrill', numDrillMode);
+route('/images', imagesMode);
+route('/nback', nbackMode);
+
+startRouter();
+
+// 오프라인 사용을 위한 서비스 워커 (https 또는 localhost에서만 동작)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}

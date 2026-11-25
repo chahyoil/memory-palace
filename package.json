@@ -1,0 +1,12 @@
+{
+  "name": "memory-palace",
+  "version": "0.2.0",
+  "private": true,
+  "description": "기억력 대회 기법을 연습하는 개인용 훈련 앱 (PWA)",
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes serve -l 5173 .",
+    "dev:lan": "npx --yes serve -l tcp://0.0.0.0:5173 .",
+    "check": "node scripts/check.mjs"
+  }
+}
