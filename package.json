@@ -9,7 +9,7 @@
     "dev:lan": "npx --yes serve -l tcp://0.0.0.0:5173 .",
     "check": "node scripts/check.mjs",
     "build:www": "node scripts/build-www.mjs",
-    "apk": "npm run check && npm run build:www && npx cap sync android && cd android && gradlew.bat assembleDebug"
+    "apk": "npm run check && npm run build:www && npx cap sync android && node scripts/apk.mjs"
   },
   "devDependencies": {
     "@capacitor/android": "^8.6.2",
